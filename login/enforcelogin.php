@@ -1,6 +1,8 @@
 <?php
 	include(__DIR__ . '/../sqli.php');
-	session_start();
+    if(session_id() == '') {
+        session_start();
+    }
 	unset($_SESSION['loginerror']);
 	if(!isset($_SESSION['loggedin'])) {
 		if(isset($_POST['username']) && isset($_POST['password'])) {

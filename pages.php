@@ -1,19 +1,23 @@
 <?php
+
+if(session_id() == '') {
+    session_start();
+}
+
 class LoadState {
     const None = 1;
     const Head = 2;
     const Body = 3;
     const Page = 4;
     const Content = 5;
-    const PostContent = 6;
-    const PostPage = 7;
-    const PostBody = 8;
+    const End = 6;
 }
 
-var $loaded = LoadState::None;
+$loaded = LoadState::None;
+
 function startHead() {
+    global $loaded;
     if ($loaded == LoadState::None) {
-        require_once "./login/enforcelogin.php"; 
         echo "<!DOCTYPE html>\n<html><head>";
         include('head.php');
         $loaded = LoadState::Head;
@@ -23,8 +27,9 @@ function startHead() {
 }
 
 function startBody() {
+    global $loaded;
     if ($loaded < LoadState::Head) {
-        startHead()
+        startHead();
     } 
     if ($loaded == LoadState::Head) {
         echo '</head><body>';
@@ -35,8 +40,9 @@ function startBody() {
 }
 
 function startPage() {
+    global $loaded;
     if ($loaded < LoadState::Body) {
-        startBody()
+        startBody();
     } 
     if ($loaded == LoadState::Body) {
         echo '<div data-role="page" data-theme="a">';
@@ -48,17 +54,31 @@ function startPage() {
     }
 }
 
-function startPage() {
+function startContent() {
+    global $loaded;
     if ($loaded < LoadState::Page) {
-        startBody()
+        startPage();
     } 
     if ($loaded == LoadState::Page) {
-        echo '<div data-role="page" data-theme="a">';
-        include('header.php');
-        displayMessages();
-        $loaded = LoadState::Page;
+        echo '<div data-role="content">';
+        $loaded = LoadState::Content;
     } else {
-        errormsg("Page already started");
+        errormsg("Content already started");
+    }
+}
+
+function endContent() {
+    global $loaded;
+    if ($loaded < LoadState::Content) {
+        startContent();
+    } 
+    if ($loaded == LoadState::Content) {
+        echo '</div>';
+        include('footer.php');
+        echo '</body></html>';
+        $loaded = LoadState::End;
+    } else {
+        errormsg("Content already ended");
     }
 }
 
@@ -76,20 +96,20 @@ function warningmsg($msg) {
 
 function displayMessages() {
     if (isset($_SESSION['successes'])) {
-        displayType($_SESSION['successes'],"d");
+        displayMsgType($_SESSION['successes'],"d");
         unset($_SESSION['successes']);
     }
     if (isset($_SESSION['errors'])) {
-        displayType($_SESSION['errors'],"c");
+        displayMsgType($_SESSION['errors'],"c");
         unset($_SESSION['errors']);
     }
     if (isset($_SESSION['warnings'])) {
-        displayType($_SESSION['warnings'],"b");
+        displayMsgType($_SESSION['warnings'],"b");
         unset($_SESSION['warnings']);
     }
 }
 
-function displayType($msgs, $theme) {
+function displayMsgType($msgs, $theme) {
     foreach ($msgs as $msg) {
 ?>
             <ul style="margin:15px;" data-role="listview" data-theme="<?php echo $theme; ?>">
@@ -100,33 +120,4 @@ function displayType($msgs, $theme) {
 <?php
     }
 }
-    
-include("./login/enforcelogin.php"); ?><!DOCTYPE html>
-<html>
-    <head>
-        <?php include('head.php'); ?>
-    </head>
-    <body>
-        <div data-role="page" data-theme="a">
-            <?php
-                if (isset($_SESSION['signupmsg'])) {
-            ?>
-                    <ul style="margin:15px;" data-role="listview" data-theme="d">
-                        <li>
-                            <?php echo $_SESSION['signupmsg']; ?>
-                        </li>
-                    </ul>
-            <?php
-                    unset($_SESSION['signupmsg']);
-                }
-            ?>
-            <div data-role="content">
-                <a href="info" data-ajax="false" data-role="button" data-icon="grid">Your Info</a>
-                <a href="list/" data-ajax="false" data-role="button" data-icon="grid">Client List</a>
-                <a href="dbxtest/" data-ajax="false" data-role="button" data-icon="grid">Dropbox</a>
-                <a href="login/logout" data-ajax="false" data-role="button" data-icon="delete" data-theme="c">Log out</a>
-            </div>
-            <?php include('footer.php'); ?>
-        </div>
-    </body>
-</html>
+?>
