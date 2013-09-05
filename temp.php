@@ -1,6 +1,6 @@
 <?php
-    require_once './login/enforceLogin.php';
     require_once './pages.php';
+    enforceLogin();
     startContent();
 ?>
 <p>Temping</p>

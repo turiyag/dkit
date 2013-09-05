@@ -120,4 +120,12 @@ function displayMsgType($msgs, $theme) {
 <?php
     }
 }
+
+function enforceLogin() {
+    include __DIR__ . "/login/enforcelogin.php";
+}
+
+function enforceDbx() {
+    include __DIR__ . "/dbx/enforce.php";
+}
 ?>

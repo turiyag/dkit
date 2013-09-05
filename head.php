@@ -1,6 +1,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>CPSC471: Course Project</title>
+        <title>Designer's Toolkit</title>
         <link rel="stylesheet" href="/dev/dkit/themes/cpsc471.min.css" />
         <link rel="stylesheet" href="//code.jquery.com/mobile/1.2.0/jquery.mobile.structure-1.2.0.min.css" />
         <link rel="stylesheet" href="/dev/dkit/style.css" />

@@ -1,5 +1,5 @@
 <?php
-	include(__DIR__ . '/../sqli.php');
+	require_once __DIR__ . '/../sqli.php';
     if(session_id() == '') {
         session_start();
     }
