@@ -35,4 +35,3 @@
         header('Location: http://' . $_SERVER['HTTP_HOST'] . '/dev/dkit/');
         exit();
     }
-?>
