@@ -1,12 +1,30 @@
 <?php
+    require_once "../login/enforcelogin.php"; 
     # Include the Dropbox SDK libraries
     require_once __DIR__ . "/../dbxlib/Dropbox/autoload.php";
+    require_once '../sqli.php';
     use \Dropbox as dbx;
     
     $appInfo = dbx\AppInfo::loadFromJsonFile("dbauth.json");
     $webAuth = new dbx\WebAuthNoRedirect($appInfo, "PHP-Example/1.0");
-    $authorizeUrl = $webAuth->start();
-    list($accessToken, $dropboxUserId) = $webAuth->finish($_GET['txtauthcode']);
+
+    if(isset($_REQUEST['txtauthcode'])) {
+            
+        try {        
+            unset($_SESSION['dbx']);
+            list($accessToken, $dropboxUserId) = $webAuth->finish($_REQUEST['txtauthcode']);
+            
+            $_SESSION['dbx'] = array();
+            $_SESSION['dbx']['token'] = $accessToken;
+            $_SESSION['dbx']['userid'] = $dropboxUserId;
+            $query = "INSERT INTO dbx (username, token) VALUES ('" . $_SESSION['username'] . "','" . $mysqli->real_escape_string($_SESSION['dbx']['token']) . "')";
+            $result = $mysqli->query($query);
+        } catch (\Dropbox\Exception\BadRequestException $e) {
+            // Return the cached data
+            
+        }
+    }
+
 ?><!DOCTYPE HTML>
 <html>
 <head>
@@ -25,12 +43,12 @@
 	</div>
 	<div id="content">
         <h3>Username:</h3>
-        <p><?php echo $dropboxUserId; ?></p>
+        <p><?php echo $_SESSION['dbx']['userid']; ?></p>
         <h3>Access Token:</h3>
-        <p><?php echo $accessToken; ?></p>
+        <p><?php echo $_SESSION['dbx']['token']; ?></p>
         <pre>
             <?php
-                $dbxClient = new dbx\Client($accessToken, "PHP-Example/1.0");
+                $dbxClient = new dbx\Client($_SESSION['dbx']['token'], "PHP-Example/1.0");
                 $accountInfo = $dbxClient->getAccountInfo();
                 print_r($accountInfo);
             ?>

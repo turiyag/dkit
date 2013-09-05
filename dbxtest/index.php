@@ -1,12 +1,12 @@
 <?php
     # Include the Dropbox SDK libraries
     require_once __DIR__ . "/../dbxlib/Dropbox/autoload.php";
+    require_once "../login/enforcelogin.php"; 
     use \Dropbox as dbx;
     
     $appInfo = dbx\AppInfo::loadFromJsonFile("dbauth.json");
     $webAuth = new dbx\WebAuthNoRedirect($appInfo, "PHP-Example/1.0");
     $authorizeUrl = $webAuth->start();
-    include("../login/enforcelogin.php"); 
 ?><!DOCTYPE html>
 <html>
     <head>
