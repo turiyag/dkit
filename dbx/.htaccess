@@ -1,0 +1,8 @@
+# Rewrite URLs to have .html extensions
+RewriteEngine on
+rewriterule ^([^.]+[^/])$ $1.php
+# and the requested path and file doesn't directly match a physical file
+RewriteCond %{REQUEST_FILENAME} !-f
+# and the requested path and file doesn't directly match a physical folder
+RewriteCond %{REQUEST_FILENAME} !-d
+rewriterule .* dir.php [L]

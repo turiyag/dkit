@@ -1,8 +1,7 @@
 <?php
     session_start();
-	include(__DIR__ . '/../sqli.php');
-?>
-<!DOCTYPE html>
+	include __DIR__ . '/../sqli.php';
+?><!DOCTYPE html>
 <html>
     <head>
         <?php include('head.php'); ?>
