@@ -1,5 +1,3 @@
-
-<?php include("./login/enforcelogin.php"); ?>
 <!DOCTYPE html>
 <html>
     <head>

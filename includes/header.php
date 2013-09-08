@@ -1,5 +1,11 @@
-<div data-role="header">
-    <h1>Designer's Toolkit</h1>
-    <?php if(!($_SERVER['PHP_SELF']=='/dev/dkit/index.php')) { ?><a href="/dev/dkit/" data-ajax="false" data-icon="home" data-iconpos="notext">Home</a><?php } ?>
-    <?php if(!($_SERVER['PHP_SELF']=='/dev/dkit/help.php') && isset($_SESSION['username'])) { ?><a href="/dev/dkit/login/logout" data-ajax="false" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Log out</a><?php } ?>
+<?php
+    require_once 'user.php';
+?>
+<div class="header">
+    <h1><a href="/dev/dkit" data-icon="home"></a> Designer's Toolkit<a href="/dev/dkit/login/logout" data-icon="delete"></a></h1>
+<?php
+    if (User::currentUser()) {
+        echo User::currentUser();
+    }
+?>
 </div>

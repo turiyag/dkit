@@ -1,7 +1,7 @@
 <?php
-    include('../sqli.php');
+    include 'sqli.php';
+    include 'pages.php';
     session_start();
-    unset($_SESSION['signuperror']);
     if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email']) && isset($_POST['tel'])) {
         $query = "SELECT * FROM users WHERE username='" . $mysqli->real_escape_string($_POST['username']) . "'";
         $result = $mysqli->query($query);

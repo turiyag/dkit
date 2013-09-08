@@ -1,54 +1,57 @@
 <?php
-    session_start();
-    include('../sqli.php');
+    require_once 'pages.php';
+    require_once 'user.php';
+    if(isset($_REQUEST['username'])) {
+        $u = Users::add($_REQUEST['username']);
+        if ($u) {
+            foreach (array("fullname","initials","email","tel") as $val) {
+                if (isset($_REQUEST[$val])) {
+                    $u->set($val,$_REQUEST[$val]);
+                }
+            }
+            if (isset($_REQUEST['password'])) {
+                $u->setPassword($_REQUEST['password']);
+                successmsg("Signed up as " . $_REQUEST['username']);
+                User::login($_REQUEST['username'], $_REQUEST['password']);
+                redirect("/dev/dkit/");
+            } else {
+                errormsg("Password not set");
+            }
+        } else {
+            errormsg("An error occurred");
+        }
+    }
+    startContent();
 ?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <?php include('head.php'); ?>
-    </head>
-    <body>
-        <div id="signup" data-role="page" data-theme="e">
-            <script>
-                $(document).delegate("#signup", "pageinit", function() {
-                    $(":input").keyup(function() {
-                        if ($("#txtPassword").val() == $("#txtPassword2").val() && $("#txtUsername").val() != "" && $("#txtEmail").val() != "" && $("#txtTel").val() != "" && $("#txtPassword").val() != "") {
-                            $('#signupbtn').button('enable'); 
-                        } else {
-                            $('#signupbtn').button('disable'); 
-                        }
-                    });
-                    $('#signupbtn').button('disable'); 
-                });
-            </script>
-            <?php include('../header.php');?>
-            <div data-role="content">
-                <?php
-                    if (isset($_SESSION['signuperror'])) {
-                ?>
-                        <ul style="margin:15px;" data-role="listview" data-theme="c">
-                            <li>
-                                <strong>Error: </strong> <?php echo $_SESSION['signuperror']; ?>
-                            </li>
-                        </ul>
-                <?php
-                    }
-                ?>
-                <form method="post" action="sqlsignup" data-ajax="false">
-                    <label for="txtUsername">Username:</label>
-                    <input type="text" id="txtUsername" name="username" placeholder="username" />
-                    <label for="txtEmail">E-mail:</label>
-                    <input type="email" id="txtEmail" name="email" placeholder="email" />
-                    <label for="txtTel">Telephone:</label>
-                    <input type="tel" id="txtTel" name="tel" placeholder="telephone #" />
-                    <label for="txtPassword">Password:</label>
-                    <input type="password" id="txtPassword" name="password" placeholder="password" />
-                    <label for="txtPassword2">Retype Password:</label>
-                    <input type="password" id="txtPassword2" name="txtPassword2" placeholder="password" />
-                    <button id="signupbtn" data-theme="d">Sign up</button>
-                </form>
-            </div>
-            <?php include('../footer.php'); ?>
-        </div>
-    </body>
-</html>
+<form method="post" action="signup">
+    <input type="text" id="txtuser" name="username" placeholder="username" />
+    <input type="text" id="txtName" name="fullname" placeholder="full name" />
+    <input type="text" id="txtInitials" name="initials" placeholder="initials" />
+    <input type="tel" id="txtTel" name="tel" placeholder="telephone" />
+    <input type="email" id="txtEmail" name="email" placeholder="email" />
+    <input type="password" id="txtPassword" name="password" placeholder="password" />
+    <input type="password" id="txtPassword2" name="password2" placeholder="confirm password" />
+    <button id="update">Sign up</button>
+</form>
+<script>
+    $(function(){
+        $("#update").disable();
+        $("#txtPassword, #txtPassword2").change(function(e) {
+            testPasswordMatch();
+        });
+        $("#txtPassword, #txtPassword2").keyup(function(e) {
+            testPasswordMatch();
+        });
+        function testPasswordMatch() {
+            p1 = $("#txtPassword").val();
+            p2 = $("#txtPassword2").val();
+            if (p1 == p2 && p1 != "") {
+                $("#update").enable();
+            } else {
+                $("#update").disable();
+            }
+        }
+    });
+</script>
+<?php
+    endContent();

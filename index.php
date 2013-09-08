@@ -1,12 +1,10 @@
 <?php
-    require_once './pages.php';
+    require_once 'pages.php';
     enforceLogin();
-    startContent();
+    startContent(); 
 ?>
-<a href="info" data-ajax="false" data-role="button" data-icon="grid">Your Info</a>
-<a href="list/" data-ajax="false" data-role="button" data-icon="grid">Client List</a>
-<a href="dbx/" data-ajax="false" data-role="button" data-icon="grid">Dropbox</a>
-<a href="login/logout" data-ajax="false" data-role="button" data-icon="delete" data-theme="c">Log out</a>
+<a href="info" data-role="button">Edit Profile</a>
+<a href="clients/" data-role="button">Clients</a>
+<a href="dbx/" data-role="button">Dropbox</a>
 <?php
     endContent();
-?>

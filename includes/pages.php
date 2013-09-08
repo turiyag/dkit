@@ -4,6 +4,10 @@ if(session_id() == '') {
     session_start();
 }
 
+if(!isset($_SESSION['msgs'])) {
+    $_SESSION['msgs'] = [];
+}
+
 class LoadState {
     const None = 1;
     const Head = 2;
@@ -45,7 +49,7 @@ function startPage() {
         startBody();
     } 
     if ($loaded == LoadState::Body) {
-        echo '<div data-role="page" data-theme="a">';
+        echo '<div class="page">';
         include('header.php');
         displayMessages();
         $loaded = LoadState::Page;
@@ -60,22 +64,24 @@ function startContent() {
         startPage();
     } 
     if ($loaded == LoadState::Page) {
-        echo '<div data-role="content">';
+        echo '<div class="content">';
         $loaded = LoadState::Content;
     } else {
         errormsg("Content already started");
     }
 }
 
-function endContent() {
+function endContent($footer = true) {
     global $loaded;
     if ($loaded < LoadState::Content) {
         startContent();
     } 
     if ($loaded == LoadState::Content) {
         echo '</div>';
-        include('footer.php');
-        echo '</body></html>';
+        if ($footer) {
+            include('footer.php');
+        }
+        echo '</div></body></html>';
         $loaded = LoadState::End;
     } else {
         errormsg("Content already ended");
@@ -83,49 +89,51 @@ function endContent() {
 }
 
 function successmsg($msg) {
-    $_SESSION['successes'][] = $msg;
+    $_SESSION['msgs']['successes'][] = $msg;
 }
 
 function errormsg($msg) {
-    $_SESSION['errors'][] = $msg;
+    $_SESSION['msgs']['errors'][] = $msg;
 }
 
-function warningmsg($msg) {
-    $_SESSION['warnings'][] = $msg;
+function infomsg($msg) {
+    $_SESSION['msgs']['infos'][] = $msg;
 }
 
 function displayMessages() {
-    if (isset($_SESSION['successes'])) {
-        displayMsgType($_SESSION['successes'],"d");
-        unset($_SESSION['successes']);
+    if (isset($_SESSION['msgs']['successes'])) {
+        displayMsgType($_SESSION['msgs']['successes'],"success","check");
+        unset($_SESSION['msgs']['successes']);
     }
-    if (isset($_SESSION['errors'])) {
-        displayMsgType($_SESSION['errors'],"c");
-        unset($_SESSION['errors']);
+    if (isset($_SESSION['msgs']['errors'])) {
+        displayMsgType($_SESSION['msgs']['errors'],"error","alert");
+        unset($_SESSION['msgs']['errors']);
     }
-    if (isset($_SESSION['warnings'])) {
-        displayMsgType($_SESSION['warnings'],"b");
-        unset($_SESSION['warnings']);
+    if (isset($_SESSION['msgs']['infos'])) {
+        displayMsgType($_SESSION['msgs']['infos'],"info","info");
+        unset($_SESSION['msgs']['infos']);
     }
 }
 
-function displayMsgType($msgs, $theme) {
+function displayMsgType($msgs, $theme, $icon) {
     foreach ($msgs as $msg) {
 ?>
-            <ul style="margin:15px;" data-role="listview" data-theme="<?php echo $theme; ?>">
-                <li>
-                    <?php echo $msg; ?>
-                </li>
-            </ul>
+            <div class="msg-<?php echo $theme; ?>">
+                <span data-icon="<?= $icon; ?>"></span><?= $msg; ?>
+            </div>
 <?php
     }
 }
 
 function enforceLogin() {
-    include __DIR__ . "/login/enforcelogin.php";
+    include __DIR__ . "/../login/enforce.php";
 }
 
 function enforceDbx() {
-    include __DIR__ . "/dbx/enforce.php";
+    include __DIR__ . "/../dbx/enforce.php";
 }
-?>
+
+function redirect($url) {
+    header('Location: http://' . $_SERVER['HTTP_HOST'] . $url);
+    exit();
+}

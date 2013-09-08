@@ -1,12 +1,5 @@
-            <a href="contact">
-                <div data-role="footer" data-theme="a">
-                        <?php
-                            if (isset($_SESSION['username'])) {
-                                echo "<h1>Logged in as: " . $_SESSION['username'] . "</h1>";
-                            } else {
-                                echo "<h1>You are not logged in</h1>";
-                            }
-                        ?>
-                        <h1>Contact Us</h1>
-                </div>
-            </a>
+<hr />
+<div class="ui-col2">
+    <a href="/dev/dkit/contact" data-role="button">Contact us</a>
+    <a href="/dev/dkit/login/logout" data-role="button">Log out</a>
+</div>

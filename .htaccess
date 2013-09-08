@@ -1,3 +1,5 @@
 # Rewrite URLs to have .html extensions
 RewriteEngine on
 rewriterule ^([^.]+[^/])$ $1.php
+
+ErrorDocument 404 /dev/dkit/404.php

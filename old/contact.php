@@ -1,5 +1,4 @@
 <?php
-    include("./login/enforcelogin.php");
     include('sqli.php');
 ?>
 <!DOCTYPE html>
