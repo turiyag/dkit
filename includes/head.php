@@ -10,7 +10,7 @@
     });
     
     $.fn.pretty = function() {
-        $texts = this.filter(":text, :password, input[type=number], input[type=search], input[type=tel], input[type=url], input[type=email]");
+        $texts = this.filter(":text, :password, input[type=number], input[type=search], input[type=tel], input[type=url], input[type=email], textarea");
         $texts.addClass("ui-text");
         $.each($texts, function(idx, obj) {
             if (!$(obj).parent().hasClass("textwrap")) {

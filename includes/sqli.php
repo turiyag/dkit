@@ -1,12 +1,12 @@
 <?php
     //If we have not yet created the $mysqli object
-    if(!isset($mysqli)) {
+    if(!isset($GLOBALS['mysqli'])) {
         //Make a new MySQLi object that connects to the local computer, with the username 'cpsc471'
         //    and the password "ps3xy6NGwHTQj4Xm", and connects to the database "cpsc471"
-        $mysqli = new mysqli("localhost", "dkit", "cWfxtAhDHCYqL9BQ","dkit");
+        $GLOBALS['mysqli'] = new mysqli("localhost", "dkit", "cWfxtAhDHCYqL9BQ","dkit");
         //If we couldn't connect, then die (ends execution) and print the error
-        if ($mysqli->connect_error) {
-            die('Connect Error [' . $mysqli->connect_errno . '] ' . $mysqli->connect_error);
+        if ($GLOBALS['mysqli']->connect_error) {
+            die('Connect Error [' . $GLOBALS['mysqli']->connect_errno . '] ' . $GLOBALS['mysqli']->connect_error);
         }
         
         /*
@@ -22,7 +22,7 @@
         */
         function where($possible, $compare = "=", $glue = "AND", $pre = "", $post = "") {
             //Using the global $mysqli connection
-            global $mysqli;
+            $mysqli = $GLOBALS['mysqli'];
             //Trim the spaces off of the $glue and $compare 
             //    and add them again, ensuring that nothing is over or under-spaced
             $glue = " " . trim($glue) . " ";
@@ -66,7 +66,7 @@
         */
         function insertRow($tablename, $columns, $values) {
             //Using the global $mysqli connection
-            global $mysqli;
+            $mysqli = $GLOBALS['mysqli'];
             //Build a query
             $query = "INSERT INTO " . $tablename;
             $query .= " (`" . implode("`,`", $columns) . "`)";

@@ -137,3 +137,17 @@ function redirect($url) {
     header('Location: http://' . $_SERVER['HTTP_HOST'] . $url);
     exit();
 }
+
+function allSet($mixed) {
+    if (is_array($mixed)) {
+        $track = true;
+        foreach($mixed as $val) {
+            if(empty($_REQUEST[$val])) {
+                $track = false;
+            }
+        }
+        return $track;
+    } else {
+        return !empty($_REQUEST[$mixed]);
+    }
+}

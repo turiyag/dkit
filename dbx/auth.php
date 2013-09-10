@@ -4,7 +4,7 @@
     use \Dropbox as dbx;
 
     enforceLogin();
-	enforceDbx();
+    enforceDbx();
 	startContent();
 ?>
         <p>You are authenticated, Dropbox integration is enabled</p>

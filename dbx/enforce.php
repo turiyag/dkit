@@ -6,16 +6,13 @@ require_once 'user.php';
 use \Dropbox as dbx;
 
 enforceLogin();
-infomsg("Enforcing Token");
 if(!isset($_SESSION['dbx'])) {
-    infomsg("Retrieving token");
     $_SESSION['dbx'] = array();
     $u = new User();
     $token = $u->get("token","dbx");
     //If credentials are accurate
     if ($token) {
         $_SESSION['dbx']['token'] = $token;
-        infomsg("Retrieved token");
     } else {
         if(isset($_REQUEST['txtauthcode'])) {
 

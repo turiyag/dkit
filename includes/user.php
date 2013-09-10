@@ -4,7 +4,8 @@ require_once "sqli.php";
 class Users
 {
     public function listAll() {
-        global $mysqli;
+        //Using the global $mysqli connection
+        $mysqli = $GLOBALS['mysqli'];
         $query = "SELECT username FROM users";
         $result = $mysqli->query($query);
         if (!$result) {
@@ -22,7 +23,8 @@ class Users
     }
     
     public static function add($username) {
-        global $mysqli;
+        //Using the global $mysqli connection
+        $mysqli = $GLOBALS['mysqli'];
         $query = "INSERT INTO users (username) VALUES ('" . $mysqli->real_escape_string($username) . "')";
         $result = $mysqli->query($query);
         if (!$result) {
@@ -44,7 +46,8 @@ class User
     }
     
     public function get($attr = "", $table = "users") {
-        global $mysqli;
+        //Using the global $mysqli connection
+        $mysqli = $GLOBALS['mysqli'];
         $query = "SELECT * FROM " . $mysqli->real_escape_string($table) . " WHERE username='" . $mysqli->real_escape_string($_SESSION['username']) . "'";
         $result = $mysqli->query($query);
         if (!$result) {
@@ -65,14 +68,15 @@ class User
     }
     
     public function set($attr, $val, $table = "users") {
-        global $mysqli;
+        //Using the global $mysqli connection
+        $mysqli = $GLOBALS['mysqli'];
         $eattr = $mysqli->real_escape_string($attr);
         $eval = $mysqli->real_escape_string($val);
         $etable = $mysqli->real_escape_string($table);
         $euser = $mysqli->real_escape_string($this->id);
-        $query = "INSERT INTO $etable (username,$eattr) VALUES ($euser,$eval)";
+        $query = "INSERT INTO $etable (username,$eattr) VALUES ('$euser','$eval')";
         $query .= " ON DUPLICATE KEY UPDATE $eattr='$eval'";
-        infomsg($query);
+        //infomsg($query);
         $result = $mysqli->query($query);
         if (!$result) {
             errormsg($mysqli->error);
@@ -81,7 +85,8 @@ class User
     }
     
     public function setPassword($pwd) {
-        global $mysqli;
+        //Using the global $mysqli connection
+        $mysqli = $GLOBALS['mysqli'];
         $query = "UPDATE users SET password='" . sha1($mysqli->real_escape_string($pwd)) . "' ";
         $query .= "WHERE username='" . $mysqli->real_escape_string($this->id) . "'";
         $result = $mysqli->query($query);
@@ -89,7 +94,8 @@ class User
             errormsg($mysqli->error);
             return false;
         }
-        successmsg("Password updated");
+        return true;
+        //successmsg("Password updated");
     }
     
     function __construct($username = "") {
@@ -110,7 +116,8 @@ class User
     }
     
     public static function login($username, $password) {
-        global $mysqli;
+        //Using the global $mysqli connection
+        $mysqli = $GLOBALS['mysqli'];
         $query = "SELECT * FROM users WHERE username='" . $mysqli->real_escape_string($username) . "' AND password='" . sha1($mysqli->real_escape_string($password)) . "'";
         $result = $mysqli->query($query);
         if (!$result) {

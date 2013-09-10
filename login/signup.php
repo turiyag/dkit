@@ -31,26 +31,40 @@
     <input type="email" id="txtEmail" name="email" placeholder="email" />
     <input type="password" id="txtPassword" name="password" placeholder="password" />
     <input type="password" id="txtPassword2" name="password2" placeholder="confirm password" />
-    <button id="update">Sign up</button>
+    <button id="btnSignup">Sign up</button>
 </form>
 <script>
     $(function(){
-        $("#update").disable();
-        $("#txtPassword, #txtPassword2").change(function(e) {
-            testPasswordMatch();
+        $("#btnSignup").disable();
+        $("#txtName, #txtInitials, #txtPassword, #txtPassword2").change(function(e) {
+            validate();
         });
         $("#txtPassword, #txtPassword2").keyup(function(e) {
-            testPasswordMatch();
+            validate();
         });
-        function testPasswordMatch() {
+        $("#txtName, #txtInitials").change(function(e) {
+            validate();
+        });
+        function validate() {
             p1 = $("#txtPassword").val();
             p2 = $("#txtPassword2").val();
             if (p1 == p2 && p1 != "") {
-                $("#update").enable();
+                if($("#txtName").val() != "" && $("#txtInitials").val() != "") {
+                    $("#btnSignup").enable();
+                } else {
+                    $("#btnSignup").disable();
+                }
             } else {
-                $("#update").disable();
+                $("#btnSignup").disable();
             }
         }
+        $("#txtName").change(function(e) {
+            if($("#txtInitials").val() == "") {
+                nm = $("#txtName").val() + " ";
+                nm = nm.replace(/([^ ])[^ ]* /g,"$1");
+                $("#txtInitials").val(nm);
+            }
+        });
     });
 </script>
 <?php
