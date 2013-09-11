@@ -1,7 +1,6 @@
 <?php
 require_once "sqli.php";
-
-class ExistenceException extends Exception {}
+require_once "user.php";
 
 class Clients
 {
@@ -10,10 +9,9 @@ class Clients
 		$mysqli = $GLOBALS['mysqli'];
 		$query = "SELECT id FROM clients";
 		$result = $mysqli->query($query);
-        if (!$result) {
-            errormsg($mysqli->error);
-            return false;
-        }
+		if (!$result) {
+			throw new Exception($mysqli->error);
+		}
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()) {
 				$clients[] = new Client($row['id']);
@@ -22,18 +20,21 @@ class Clients
 		} else {
 			return array();
 		}
-        infomsg("test3");
+		infomsg("test3");
 	}
 	
-	public static function add() {
+	public static function add($owner = "") {
+		if ($owner === "") {
+			$u = User::currentUser();
+		}
 		//Using the global $mysqli connection
 		$mysqli = $GLOBALS['mysqli'];
-		$query = "INSERT INTO clients (name,notes) VALUES ('','')";
+		$query = "INSERT INTO clients (name,own_u,notes) VALUES ('','" . $u . "','')";
 		$result = $mysqli->query($query);
-        if (!$result) {
-            errormsg($mysqli->error);
-            return false;
-        }
+		if (!$result) {
+			throw new Exception($mysqli->error);
+			return false;
+		}
 		return new Client($mysqli->insert_id);
 	}
 }
@@ -49,10 +50,10 @@ class Client
 		$query = "SELECT * FROM " . $mysqli->real_escape_string($table);
 		$query .= " WHERE id=" . $mysqli->real_escape_string($this->id);
 		$result = $mysqli->query($query);
-        if (!$result) {
-            errormsg($mysqli->error);
-            return false;
-        }
+		if (!$result) {
+			throw new Exception($mysqli->error);
+			return false;
+		}
 		if ($result->num_rows > 0) {
 			$row = $result->fetch_assoc();
 			if ($attr == "") {
@@ -71,60 +72,68 @@ class Client
 		$query = "UPDATE " . $mysqli->real_escape_string($table) . " SET " . $mysqli->real_escape_string($attr). "='" . $mysqli->real_escape_string($val) . "' ";
 		$query .= "WHERE id=" . $mysqli->real_escape_string($this->id);
 		$result = $mysqli->query($query);
-        if (!$result) {
-            errormsg($mysqli->error);
-            return false;
-        }
-        return true;
+		if (!$result) {
+			throw new Exception($mysqli->error);
+			return false;
+		}
+		return true;
 	}
 	
 	function __construct($id = "", $checkexistence = true) {
-        if($id == "") {
-            if (empty($_REQUEST['clientid'])) {
-                throw new InvalidArgumentException('$_REQUEST[\'clientid\'] empty');
-            } else {
-                $id = $_REQUEST['clientid'];
-            }
-        }
-        if(!is_numeric($id)) {
-            throw new InvalidArgumentException('Non-numeric id');
-        }
+		if($id == "") {
+			if (empty($_SESSION['client'])) {
+				throw new Exception('No current client');
+			} else {
+				$id = $_SESSION['client'];
+			}
+		}
+		if(!is_numeric($id)) {
+			throw new Exception('Non-numeric id');
+		}
 		$this->id = $id;
-        if($checkexistence) {
-            if(!$this->exists()) {
-                throw new ExistenceException('Client does not exist');
-            }
-        }
+		if($checkexistence) {
+			if(!$this->exists()) {
+				throw new Exception('Client does not exist');
+			}
+		}
 	}
-    
-    public function exists($table = "clients") {
+	
+	public function currentClient() {
+		if (empty($_SESSION['client'])) {
+			throw new Exception('No current client');
+		} else {
+			$id = $_SESSION['client'];
+		}
+	}
+	
+	public function exists($table = "clients") {
 		//Using the global $mysqli connection
 		$mysqli = $GLOBALS['mysqli'];
 		$query = "SELECT * FROM " . $mysqli->real_escape_string($table);
 		$query .= " WHERE id=" . $mysqli->real_escape_string($this->id);
 		$result = $mysqli->query($query);
-        if (!$result) {
-            errormsg($mysqli->error);
-            return false;
-        }
+		if (!$result) {
+			throw new Exception($mysqli->error);
+			return false;
+		}
 		if ($result->num_rows > 0) {
 			return true;
 		} else {
 			return false;
 		}
-    }
-    
-    public function delete($table = "clients") {
+	}
+	
+	public function delete($table = "clients") {
 		//Using the global $mysqli connection
 		$mysqli = $GLOBALS['mysqli'];
 		$query = "DELETE FROM " . $mysqli->real_escape_string($table);
 		$query .= " WHERE id=" . $mysqli->real_escape_string($this->id);
 		$result = $mysqli->query($query);
-        if (!$result) {
-            errormsg($mysqli->error);
-            return false;
-        } else {
-            return true;
-        }
-    }
+		if (!$result) {
+			throw new Exception($mysqli->error);
+			return false;
+		} else {
+			return true;
+		}
+	}
 }

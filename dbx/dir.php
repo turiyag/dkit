@@ -1,7 +1,7 @@
 <?php
 	require_once 'pages.php';
 	require_once 'dbx.php';
-    use \Dropbox as dbx;
+	use \Dropbox as dbx;
 
 	enforceLogin();
 	enforceDbx();

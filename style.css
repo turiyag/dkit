@@ -68,32 +68,50 @@ textarea {
     min-height: 6em;
 }
 
-div.textwrap {
+.textwrap {
     margin: 15px 0;
     padding: 15px;
     background: white;
     cursor: text;
 }
 
-div.textwrap.ui-disabled {
+.textwrap.ui-disabled {
     background: #ccc;
 }
 
-div.buttonwrap {
+.buttonwrap {
     margin: 15px 0;
     padding: 15px;
     background: #1a9cbc;
     cursor: pointer;
 }
 
-form div.buttonwrap {
+form .buttonwrap {
     margin: 15px 0;
     padding: 15px;
     background: #1abc9c;
     cursor: pointer;
 }
 
-div.buttonwrap.ui-disabled {
+.buttonwrap.ui-disabled {
+    background: #ccc;
+}
+
+.selwrap {
+    margin: 15px 0;
+    padding: 15px;
+    background: white;
+    cursor: pointer;
+}
+
+form .selwrap {
+    margin: 15px 0;
+    padding: 15px;
+    background: white;
+    cursor: pointer;
+}
+
+.selwrap.ui-disabled {
     background: #ccc;
 }
 
@@ -125,6 +143,13 @@ div.buttonwrap.ui-disabled {
 
 .ui-button:disabled {
     background: none;
+}
+
+.ui-select {
+    width: 100%;
+    border: none;
+    color: #4d4d4d;
+    font: inherit;
 }
 
 .page {
@@ -162,10 +187,14 @@ div.buttonwrap.ui-disabled {
 }
 
 .ui-col2 > * {
-    width: 42%;
+    width: 47%;
     display: inline-block;
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: 0;
+	margin-right: 0;
 }
 
 .ui-col2 > *:first-child {
-    margin-right: 5%;
+    margin-right: 6%;
 }

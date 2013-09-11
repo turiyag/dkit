@@ -1,9 +1,12 @@
 # Rewrite URLs to have .html extensions
 RewriteEngine on
-rewriterule ^([0-9]+)/$ edit.php?clientid=$1 [L]
-rewriterule ^([0-9]+)/edit/$ edit.php?clientid=$1 [L]
-rewriterule ^([0-9]+)/delete/$ delete.php?clientid=$1 [L]
-rewriterule ^([0-9]+)/new/$ new.php?clientid=$1 [L]
+rewriterule ^([0-9]+)/$ edit.php?client=$1 [L]
+rewriterule ^([0-9]+)/edit/$ edit.php?client=$1 [L]
+rewriterule ^([0-9]+)/delete/$ delete.php?client=$1 [L]
+rewriterule ^([0-9]+)/new/$ new.php?client=$1 [L]
+rewriterule ^([0-9]+)/surveys/$ /dev/dkit/surveys/?client=$1 [R,L]
+rewriterule ^([0-9]+)/surveys/(.+)$ /dev/dkit/surveys/$2.php?client=$1 [R,L]
+
 # and the requested path and file doesn't directly match a physical file
 RewriteCond %{REQUEST_FILENAME} !-f
 # and the requested path and file doesn't directly match a physical folder

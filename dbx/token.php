@@ -2,7 +2,7 @@
 	require_once 'pages.php';
 	require_once 'dbx.php';
 	enforceLogin();
-    use \Dropbox as dbx;
+	use \Dropbox as dbx;
 
 	
 	# Get the OAuth link

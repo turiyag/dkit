@@ -1,12 +1,20 @@
 <?php
 require_once "sqli.php";
 
-class Users
+if(session_id() == '') {
+	session_start();
+}
+
+if(!empty($_REQUEST['projectid'])) {
+	$_SESSION['project'] = $_REQUEST['project'];
+}
+
+class Projects
 {
 	public function listAll() {
 		//Using the global $mysqli connection
 		$mysqli = $GLOBALS['mysqli'];
-		$query = "SELECT username FROM users";
+		$query = "SELECT id FROM projects";
 		$result = $mysqli->query($query);
 		if (!$result) {
 			throw new Exception($mysqli->error);
@@ -17,7 +25,7 @@ class Users
 			}
 			return $clients;
 		} else {
-			return false;
+			throw new Exception('No clients found');
 		}
 	}
 	
@@ -28,13 +36,12 @@ class Users
 		$result = $mysqli->query($query);
 		if (!$result) {
 			throw new Exception($mysqli->error);
-			return false;
 		}
 		return new User($username);
 	}
 }
 
-class User
+class Project
 {
 	// property declaration
 	private $id;
@@ -51,7 +58,6 @@ class User
 		$result = $mysqli->query($query);
 		if (!$result) {
 			throw new Exception($mysqli->error);
-			return false;
 		}
 		//If credentials are accurate
 		if ($result->num_rows > 0) {
@@ -62,7 +68,7 @@ class User
 				return $row[$attr];
 			}
 		} else {
-			return false;
+			throw new Exception('User not found');
 		}
 	}
 	
@@ -79,7 +85,6 @@ class User
 		$result = $mysqli->query($query);
 		if (!$result) {
 			throw new Exception($mysqli->error);
-			return false;
 		}
 	}
 	
@@ -91,13 +96,25 @@ class User
 		$result = $mysqli->query($query);
 		if (!$result) {
 			throw new Exception($mysqli->error);
-			return false;
 		}
-		return true;
 		//successmsg("Password updated");
 	}
 	
-	function __construct($username = "") {
+	function __construct($id = "",$checkExistence = true) {
+		if($id === "") {
+			$id = currentProject();
+			if($id === false) {
+				throw new InvalidArgumentException('Null project id');
+			}
+		}
+		if(is_numeric($id)){
+			
+		}
+		if($checkexistence) {
+			if(!$this->exists()) {
+				throw new ExistenceException('Client does not exist');
+			}
+		}
 		if($username == "") {
 			if(isset($_SESSION['username'])) {
 				$username = $_SESSION['username'];
@@ -106,30 +123,11 @@ class User
 		$this->id = $username;
 	}
 	
-	public static function currentUser() {
-		if(isset($_SESSION['username'])) {
-			return $_SESSION['username'];
+	public static function currentProject() {
+		if(isset($_SESSION['project'])) {
+			return $_SESSION['project'];
 		} else {
 			return false;
 		}
-	}
-	
-	public static function login($username, $password) {
-		//Using the global $mysqli connection
-		$mysqli = $GLOBALS['mysqli'];
-		$query = "SELECT * FROM users WHERE username='" . $mysqli->real_escape_string($username) . "' AND password='" . sha1($mysqli->real_escape_string($password)) . "'";
-		$result = $mysqli->query($query);
-		if (!$result) {
-			throw new Exception($mysqli->error);
-			return false;
-		}
-		//If credentials are accurate
-		if ($result->num_rows > 0) {
-			$_SESSION['username'] = $_POST['username'];
-			return true;
-		} else {
-			return false;
-		}
-		$result->free();
 	}
 }
